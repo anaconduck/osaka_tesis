@@ -23,12 +23,13 @@ def reset_random_seeds(seed):
     
 def main():
     
+        data_dir = os.path.join(os.path.dirname(__file__), "..", "..", "data", "processed")
         #this is created in the genetic preprocess jupyter notebook
-        X_train = pd.read_pickle("X_train_vcf.pkl")
-        y_train = pd.read_pickle("y_train_vcf.pkl")
+        X_train = pd.read_pickle(os.path.join(data_dir, "X_train_vcf.pkl"))
+        y_train = pd.read_pickle(os.path.join(data_dir, "y_train_vcf.pkl"))
 
-        X_test = pd.read_pickle("X_test_vcf.pkl")
-        y_test = pd.read_pickle("y_test_vcf.pkl")
+        X_test = pd.read_pickle(os.path.join(data_dir, "X_test_vcf.pkl"))
+        y_test = pd.read_pickle(os.path.join(data_dir, "y_test_vcf.pkl"))
 
 
         acc = []

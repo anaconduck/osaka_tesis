@@ -34,7 +34,8 @@ def main():
                 output_file.write("Percent done: " + str((idx/len(cols))*100) + "\n")
                 output_file.close()
         
-        merged.to_pickle(vcf_file + "clean.pkl")
+        data_dir = os.path.join(os.path.dirname(__file__), "..", "..", "data", "processed")
+        merged.to_pickle(os.path.join(data_dir, vcf_file + "clean.pkl"))
 
         vcf = vcf.groupby('index', group_keys=False).apply(lambda x: x.loc[x.Group.idxmax()])
 
@@ -42,7 +43,7 @@ def main():
     
     vcf = pd.concat(vcfs, ignore_index=True)
     vcf = vcf.drop_duplicates()
-    vcf.to_pickle("all_vcfs.pkl")
+    vcf.to_pickle(os.path.join(data_dir, "all_vcfs.pkl"))
 
 
 

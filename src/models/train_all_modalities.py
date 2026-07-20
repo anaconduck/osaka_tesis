@@ -195,16 +195,18 @@ def train(mode, batch_size, epochs, learning_rate, seed):
     
  
     
-    train_snp = pd.read_csv("X_train_snp.csv").drop("Unnamed: 0", axis=1).values
-    test_snp = pd.read_csv("X_test_snp.csv").drop("Unnamed: 0", axis=1).values
+    import os
+    data_dir = os.path.join(os.path.dirname(__file__), "..", "..", "data", "processed")
+    train_snp = pd.read_csv(os.path.join(data_dir, "X_train_snp.csv")).drop("Unnamed: 0", axis=1).values
+    test_snp = pd.read_csv(os.path.join(data_dir, "X_test_snp.csv")).drop("Unnamed: 0", axis=1).values
 
     
-    train_img= make_img("X_train_img.pkl")
-    test_img= make_img("X_test_img.pkl")
+    train_img= make_img(os.path.join(data_dir, "X_train_img.pkl"))
+    test_img= make_img(os.path.join(data_dir, "X_test_img.pkl"))
 
     
-    train_label= pd.read_csv("y_train.csv").drop("Unnamed: 0", axis=1).values.astype("int").flatten()
-    test_label= pd.read_csv("y_test.csv").drop("Unnamed: 0", axis=1).values.astype("int").flatten()
+    train_label= pd.read_csv(os.path.join(data_dir, "y_train.csv")).drop("Unnamed: 0", axis=1).values.astype("int").flatten()
+    test_label= pd.read_csv(os.path.join(data_dir, "y_test.csv")).drop("Unnamed: 0", axis=1).values.astype("int").flatten()
 
     reset_random_seeds(seed)
     class_weights = compute_class_weight(class_weight = 'balanced',classes = np.unique(train_label),y = train_label)

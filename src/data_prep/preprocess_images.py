@@ -39,7 +39,8 @@ def create_dataset(meta, meta_all,path_to_datadir):
             meta_all = meta_all.append({"img_array": im,"label": label,"subject":subject}, ignore_index=True)
             
 
-    meta_all.to_pickle("mri_meta.pkl")
+    data_dir = os.path.join(os.path.dirname(__file__), "..", "..", "data", "processed")
+    meta_all.to_pickle(os.path.join(data_dir, "mri_meta.pkl"))
     meta_all.flush()
     os.fsync(meta_all.fileno())
     time.sleep(0.5)

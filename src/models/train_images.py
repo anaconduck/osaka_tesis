@@ -24,19 +24,20 @@ def reset_random_seeds(seed):
 
 def main():
     
-    with open("img_train.pkl", "rb") as fh:
+    data_dir = os.path.join(os.path.dirname(__file__), "..", "..", "data", "processed")
+    with open(os.path.join(data_dir, "img_train.pkl"), "rb") as fh:
         data = pickle.load(fh)
     X_train_ = pd.DataFrame(data)["img_array"] 
     
-    with open("img_test.pkl", "rb") as fh:
+    with open(os.path.join(data_dir, "img_test.pkl"), "rb") as fh:
         data = pickle.load(fh)
     X_test_ = pd.DataFrame(data)["img_array"]
     
-    with open("img_y_train.pkl", "rb") as fh:
+    with open(os.path.join(data_dir, "img_y_train.pkl"), "rb") as fh:
         data = pickle.load(fh)
     y_train = np.array(pd.DataFrame(data)["label"].values.astype(np.float32)).flatten()
     
-    with open("img_y_test.pkl", "rb") as fh:
+    with open(os.path.join(data_dir, "img_y_test.pkl"), "rb") as fh:
         data = pickle.load(fh)
     y_test = np.array(pd.DataFrame(data)["label"].values.astype(np.float32)).flatten()
     

@@ -35,7 +35,9 @@ def in_between(position, relevent):
 def main():
     
     
-    genes = pd.read_csv("gene_list.csv")
+    # Path is relative to this file's location (src/data_prep)
+    gene_list_path = os.path.join(os.path.dirname(__file__), "..", "..", "data", "external", "gene_list.csv")
+    genes = pd.read_csv(gene_list_path)
     files = os.listdir("YOUR_PATH_TO_VCFS")
     
     
