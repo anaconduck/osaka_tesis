@@ -1,0 +1,87 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+venv_tesis/
+env/
+.env/
+ENV/
+env.bak/
+venv.bak/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Project Specific Data & Outputs
+# We ignore the data folders to prevent uploading huge files to GitHub
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# We DO NOT ignore data/external/ if it contains small important metadata like gene_list.csv
+# But we ignore large files inside it just in case
+data/external/*.pkl
+data/external/*.nii.gz
+data/external/*.vcf
+
+# Model output logs and images
+*.log
+log.txt
+accuracy_*.png
+loss_*.png
+models_saved/
+*.h5
+*.hdf5
+*.keras
+
+# Other huge files
+*.csv
+*.pkl
+*.npy
+*.npz
+*.nii
+*.nii.gz
+*.vcf
+*.vcf.gz
