@@ -80,10 +80,10 @@ def main():
         model.add(MaxPooling2D((2, 2)))
         model.add(Dropout(0.3))
         model.add(Flatten())
-        model.add(Dense(3, activation = "softmax"))
+        model.add(Dense(1, activation='sigmoid'))
         
         
-        model.compile(Adam(learning_rate = 0.001), "sparse_categorical_crossentropy", metrics = ["sparse_categorical_accuracy"])
+        model.compile(Adam(learning_rate = 0.001), 'binary_crossentropy', metrics = ['binary_accuracy'])
         
         model.summary()
         
@@ -95,11 +95,11 @@ def main():
         acc.append(score[1])
         
         test_predictions = model.predict(X_test)
-        test_label = to_categorical(y_test,3)
+        test_label = y_test
 
-        true_label= np.argmax(test_label, axis =1)
+        true_label = test_label
 
-        predicted_label= np.argmax(test_predictions, axis =1)
+        predicted_label = (test_predictions > 0.5).astype(int)
         
         cr = classification_report(true_label, predicted_label, output_dict=True)
         precision.append(cr["macro avg"]["precision"])

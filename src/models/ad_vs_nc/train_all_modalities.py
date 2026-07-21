@@ -92,7 +92,7 @@ def plot_classification_report(y_tru, y_prd, mode, learning_rate, batch_size,epo
 def calc_confusion_matrix(result, test_label,mode, learning_rate, batch_size, epochs):
     test_label = to_categorical(test_label,3)
 
-    true_label= np.argmax(test_label, axis =1)
+    true_label = test_label
 
     predicted_label= np.argmax(result, axis =1)
     
@@ -184,7 +184,7 @@ def multi_modal_model(mode, train_snp, train_img):
         
     ########### Output Layer ############
         
-    output = Dense(3, activation='softmax')(merged)
+    output = Dense(1, activation='sigmoid')(merged)
     model = Model([in_snp, in_img], output)        
         
     return model
@@ -214,7 +214,7 @@ def train(mode, batch_size, epochs, learning_rate, seed):
     
     # compile model #
     model = multi_modal_model(mode, train_snp, train_img)
-    model.compile(optimizer=Adam(learning_rate = learning_rate), loss='sparse_categorical_crossentropy', metrics=['sparse_categorical_accuracy'])
+    model.compile(optimizer=Adam(learning_rate = learning_rate), loss='binary_crossentropy', metrics=['binary_accuracy'])
     
 
     # summarize results
@@ -238,7 +238,7 @@ def train(mode, batch_size, epochs, learning_rate, seed):
     
     """
     plt.clf()
-    plt.plot(history.history['sparse_categorical_accuracy'])
+    plt.plot(history.history['binary_accuracy'])
     plt.plot(history.history['val_sparse_categorical_accuracy'])
     plt.title('model accuracy')
     plt.ylabel('accuracy')
