@@ -86,7 +86,7 @@ def create_model_snp():
         x = LayerNormalization()(x)
         
         ffn_output = Dense(2048, activation='relu')(x)
-        ffn_output = Dense(512)(ffn_output)
+        ffn_output = Dense(64)(ffn_output)
         ffn_output = Dropout(0.1)(ffn_output)
         x = Add()([x, ffn_output])
         x = LayerNormalization()(x)
@@ -178,10 +178,7 @@ def multi_modal_model(mode, train_snp, train_img):
     dense_img = create_model_img()(in_img) 
     
  
-        
-    ########### Attention Layer ############
-        
-    ## Cross Modal Bi-directional Attention ##
+    
 
     if mode == 'MM_BA':
             
@@ -192,7 +189,6 @@ def multi_modal_model(mode, train_snp, train_img):
    
         
         
-    ## Self Attention ##
     elif mode == 'MM_SA':
             
         vv_att = self_attention(dense_img)
@@ -200,7 +196,6 @@ def multi_modal_model(mode, train_snp, train_img):
             
         merged = concatenate([aa_att, vv_att, dense_img, dense_snp])
         
-    ## Self Attention and Cross Modal Bi-directional Attention##
     elif mode == 'MM_SA_BA':
             
         cross_img, cross_snp = cross_modal_attention_split(dense_img, dense_snp)
@@ -221,20 +216,19 @@ def multi_modal_model(mode, train_snp, train_img):
         return
                 
         
-    ########### Output Layer ############
         
     merged = Dense(512, activation='relu')(merged)
     merged = Dropout(0.1)(merged)
     merged = Dense(256, activation='relu')(merged)
-    output = Dense(2, activation='softmax', name='main_output')(merged)
+    output = Dense(3, activation='softmax', name='main_output')(merged)
     
     dense_img_aux = Dense(512, activation='relu')(dense_img)
     dense_img_aux = Dense(256, activation='relu')(dense_img_aux)
-    output_img = Dense(2, activation='softmax', name='mri_output')(dense_img_aux)
+    output_img = Dense(3, activation='softmax', name='mri_output')(dense_img_aux)
     
     dense_snp_aux = Dense(512, activation='relu')(dense_snp)
     dense_snp_aux = Dense(256, activation='relu')(dense_snp_aux)
-    output_snp = Dense(2, activation='softmax', name='snp_output')(dense_snp_aux)
+    output_snp = Dense(3, activation='softmax', name='snp_output')(dense_snp_aux)
     
     model = Model([in_snp, in_img], [output, output_img, output_snp])        
         
@@ -301,7 +295,7 @@ def train(mode, batch_size, epochs, learning_rate, seed):
  
     
     import os
-    data_dir = os.path.join(os.path.dirname(__file__), "..", "..", "data", "processed")
+    data_dir = os.path.join(os.path.dirname(__file__), "..", "..", "..", "data", "processed")
     train_snp = pd.read_csv(os.path.join(data_dir, "X_train_snp.csv")).drop("Unnamed: 0", axis=1).values
     test_snp = pd.read_csv(os.path.join(data_dir, "X_test_snp.csv")).drop("Unnamed: 0", axis=1).values
 
@@ -318,7 +312,6 @@ def train(mode, batch_size, epochs, learning_rate, seed):
     d_class_weights = dict(enumerate(class_weights))
     sample_weights = np.array([d_class_weights[y] for y in train_label])
     
-    # compile model #
     model = multi_modal_model(mode, train_snp, train_img)
     model.compile(optimizer=Adam(learning_rate=learning_rate),
                   loss={'main_output': 'sparse_categorical_crossentropy', 
@@ -328,7 +321,6 @@ def train(mode, batch_size, epochs, learning_rate, seed):
                   metrics=['sparse_categorical_accuracy'])
     
 
-    # Manual validation split since we are using a Generator
     val_split_idx = int(len(train_snp) * 0.9)
     
     val_snp = train_snp[val_split_idx:]
@@ -340,10 +332,8 @@ def train(mode, batch_size, epochs, learning_rate, seed):
     train_label = train_label[:val_split_idx]
     sample_weights = sample_weights[:val_split_idx]
     
-    # prepare curriculum generator
     curriculum_gen = CurriculumDataGenerator(train_snp, train_img, train_label, sample_weights, batch_size, model, epochs)
 
-    # summarize results
     history = model.fit(curriculum_gen,
                         epochs=epochs,
                         validation_data=([val_snp, val_img], 
@@ -385,7 +375,6 @@ def train(mode, batch_size, epochs, learning_rate, seed):
     
  
     
-    # release gpu memory #
     K.clear_session()
     del model, history
     gc.collect()
